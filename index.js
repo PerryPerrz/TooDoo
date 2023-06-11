@@ -173,10 +173,8 @@ const editTask = (editBtn) => {
             }
         });
 
-        // Delete the old task from local storage
+        // Get the index of the task being edited
         var taskIndex = JSON.parse(editBtn.getAttribute('data')).index;
-
-        deleteTaskFromLocalStorage(taskIndex);
 
         taskInput.removeAttribute("readonly");
         taskInput.focus();
@@ -184,6 +182,9 @@ const editTask = (editBtn) => {
 
         // After editing the task, store it in local storage
         taskInput.addEventListener('blur', () => {
+            // Delete the old task from local storage
+            deleteTaskFromLocalStorage(taskIndex);
+
             // If the task is already in local storage, don't add it again
             if (localStorage.getItem('tasks').includes(taskIndex + ";" + taskInput.value)) {
                 return;
