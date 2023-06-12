@@ -78,6 +78,11 @@ const getTasks = () => {
         </div>
         `;
     });
+
+    // If there are tasks, display the clear button text
+    if (taskList.querySelectorAll('.task').length > 0) {
+        document.querySelector('#clearBtn').innerHTML = 'Clear all';
+    }
 }
 
 // Get tasks from local storage
@@ -158,6 +163,11 @@ form.addEventListener('submit', (e) => {
 
     // Clear input
     input.value = '';
+
+    // If there are tasks, display the clear button text
+    if (taskList.querySelectorAll('.task').length > 0) {
+        document.querySelector('#clearBtn').innerHTML = 'Clear all';
+    }
 });
 
 // Edit task
@@ -222,5 +232,34 @@ const deleteTask = (deleteBtn) => {
     let tasks = document.querySelectorAll('.task');
     if (tasks.length === 0) {
         Task.indexCounter = 0;
+        // If there are no more tasks, hide the clear button text
+        document.querySelector('#clearBtn').innerHTML = '';
     }
 }
+
+// Clear all tasks
+const clearTasks = () => {
+    // If there is a task being edited and the user clicks on the clear button, save the task being edited
+    const editBtns = document.querySelectorAll('.editBtn');
+    editBtns.forEach(editBtn => {
+        if (editBtn.innerHTML === 'Save') {
+            editBtn.innerHTML = 'Edit';
+            editBtn.parentElement.parentElement.querySelector('.content .text').setAttribute("readonly", "true");
+        }
+    });
+
+    // Delete all tasks from local storage
+    localStorage.clear();
+
+    // Delete all tasks from the DOM
+    taskList.innerHTML = '';
+
+    // Reset the index counter
+    Task.indexCounter = 0;
+
+    // Hide the clear button text
+    document.querySelector('#clearBtn').innerHTML = '';
+}
+
+// Clear all tasks event
+document.querySelector('#clearBtn').addEventListener('click', clearTasks);
