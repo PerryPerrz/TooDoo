@@ -263,3 +263,92 @@ const clearTasks = () => {
 
 // Clear all tasks event
 document.querySelector('#clearBtn').addEventListener('click', clearTasks);
+
+// Export tasks to JSON
+const exportTasks = () => {
+    // If there is a task being edited and the user clicks on the export button, save the task being edited
+    const editBtns = document.querySelectorAll('.editBtn');
+    editBtns.forEach(editBtn => {
+        if (editBtn.innerHTML === 'Save') {
+            editBtn.innerHTML = 'Edit';
+            editBtn.parentElement.parentElement.querySelector('.content .text').setAttribute("readonly", "true");
+        }
+    });
+
+    // Get all tasks from local storage
+    let tasks;
+    if (localStorage.getItem('tasks') === null) {
+        tasks = [];
+    } else {
+        tasks = JSON.parse(localStorage.getItem('tasks'))
+    }
+
+    // Create a JSON file
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks));
+
+    // Create a link to download the JSON file
+    let dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "tasks.json");
+    dlAnchorElem.click();
+}
+
+// Import tasks from JSON
+const importTasks = () => {
+    // If there is a task being edited and the user clicks on the import button, save the task being edited
+    const editBtns = document.querySelectorAll('.editBtn');
+    editBtns.forEach(editBtn => {
+        if (editBtn.innerHTML === 'Save') {
+            editBtn.innerHTML = 'Edit';
+            editBtn.parentElement.parentElement.querySelector('.content .text').setAttribute("readonly", "true");
+        }
+    });
+
+    // Create an input to upload the JSON file
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.click();
+
+    // When the user selects a file, read it
+    input.addEventListener('change', (e) => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.readAsText(file);
+
+        // When the file is read, add the tasks to local storage
+        reader.onload = () => {
+            let tasks = JSON.parse(reader.result);
+            tasks.forEach(task => {
+                const [index, name] = task.split(";");
+                taskList.innerHTML += `
+                <div class="tasks">
+                    <div class="task">
+                        <div class="content">
+                            <input type="text" class="text" value="${name}" readonly>
+                        </div>
+                        <div class="actions">
+                            <button class="editBtn" data='{ "index": ${index}}'>Edit</button>
+                            <button class="deleteBtn" data='{ "index": ${index}}'>Delete</button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+
+            // If there are tasks, display the clear button text
+            if (taskList.querySelectorAll('.task').length > 0) {
+                document.querySelector('#clearBtn').innerHTML = 'Clear all';
+            }
+
+            // Add tasks to local storage
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+    });
+}
+
+// Export tasks event
+document.querySelector('#exportBtn').addEventListener('click', exportTasks);
+
+// Import tasks event
+document.querySelector('#importBtn').addEventListener('click', importTasks);

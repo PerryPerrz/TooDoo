@@ -75,7 +75,7 @@ button {
 }
 
 #submitBtn,
-#openBtn,
+#importBtn,
 #exportBtn {
     color: var(--pink);
     font-size: 1.25rem;
@@ -86,13 +86,13 @@ button {
 }
 
 #submitBtn:hover,
-#openBtn:hover,
+#importBtn:hover,
 #exportBtn:hover {
     opacity: 0.8;
 }
 
 #submitBtn:active,
-#openBtn:active,
+#importBtn:active,
 #exportBtn:active {
     opacity: 0.6;
 }
